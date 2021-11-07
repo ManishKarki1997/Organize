@@ -5,8 +5,9 @@ const electronRemote =
   process.type === "browser" ? electron : require("@electron/remote");
 const { app, protocol, BrowserWindow } = electronRemote;
 require("@electron/remote/main").initialize();
-import installExtension, { VUEJS3_DEVTOOLS } from "electron-devtools-installer";
 
+import { createProtocol } from "vue-cli-plugin-electron-builder/lib";
+import installExtension, { VUEJS3_DEVTOOLS } from "electron-devtools-installer";
 const isDevelopment = process.env.NODE_ENV !== "production";
 
 // Scheme must be registered before the app is ready

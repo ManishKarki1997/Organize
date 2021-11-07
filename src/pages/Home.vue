@@ -2,11 +2,7 @@
   <div class="home">
     <Header />
     <main class="container">
-      <h4>Home</h4>
-      <p>
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Rerum libero
-        adipisci dolores expedita in iure sunt ullam id blanditiis facilis.
-      </p>
+      <FilesViewer />
     </main>
     <Footer />
   </div>
@@ -15,11 +11,13 @@
 <script>
 import Header from "@/components/Header.vue";
 import Footer from "@/components/Footer.vue";
+import FilesViewer from "@/components/FilesViewer.vue";
 
 export default {
   components: {
     Header,
     Footer,
+    FilesViewer,
   },
 };
 </script>
