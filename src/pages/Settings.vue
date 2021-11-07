@@ -13,23 +13,38 @@
         </thead>
 
         <tbody>
-          <tr v-for="item in fileTypes" :key="item.name">
-            <td>{{ item.name }}</td>
-            <td>{{ item.folderName }}</td>
+          <tr v-for="(item, idx) in fileTypes" :key="idx + '-' + item.key">
+            <td>
+              <p v-if="editingItemRef?.name !== item.name">
+                {{ item.name }}
+              </p>
+
+              <n-input
+                v-if="editingItemRef?.name === item.name"
+                v-model:value="item.name"
+                placeholder="Label Name"
+              />
+            </td>
+            <td>
+              <p v-if="editingItemRef?.name !== item.name">
+                {{ item.folderName }}
+              </p>
+
+              <n-input
+                v-if="editingItemRef?.name === item.name"
+                v-model:value="item.folderName"
+                placeholder="Folder Name"
+              />
+            </td>
             <td>
               <n-dynamic-tags v-model:value="item.extensions" />
             </td>
             <td>
-              <div class="action-buttons-wrapper">
-                <n-button @click="onClickDeleteItem(item)" text>
-                  <template #icon>
-                    <n-icon color="#ED5E60">
-                      <trash />
-                    </n-icon>
-                  </template>
-                </n-button>
-
-                <n-button text>
+              <div
+                v-if="editingItemRef?.name !== item.name"
+                class="action-buttons-wrapper"
+              >
+                <n-button @click="setEditingItem(item)" text>
                   <template #icon>
                     <n-icon color="#2080F0">
                       <svg
@@ -42,6 +57,34 @@
                           fill="currentColor"
                         ></path>
                       </svg>
+                    </n-icon>
+                  </template>
+                </n-button>
+
+                <n-button @click="onClickDeleteItem(item)" text>
+                  <template #icon>
+                    <n-icon color="#ED5E60">
+                      <trash />
+                    </n-icon>
+                  </template>
+                </n-button>
+              </div>
+
+              <div
+                v-if="editingItemRef?.name === item.name"
+                class="action-buttons-wrapper"
+              >
+                <n-button @click="onConfirmItemEdit" text>
+                  <template #icon>
+                    <n-icon color="#2080F0">
+                      <checkmark />
+                    </n-icon>
+                  </template>
+                </n-button>
+                <n-button @click="closeEditingMode" text>
+                  <template #icon>
+                    <n-icon color="#ED5E60">
+                      <close />
                     </n-icon>
                   </template>
                 </n-button>
@@ -94,7 +137,7 @@ import {
 } from "naive-ui";
 import Header from "@/components/Header.vue";
 import { fileTypes } from "@/composables/useSettings";
-import { Trash, Add } from "@vicons/ionicons5";
+import { Trash, Add, Checkmark, Close } from "@vicons/ionicons5";
 
 export default {
   components: {
@@ -106,9 +149,14 @@ export default {
     NIcon,
     Trash,
     Add,
+    Checkmark,
+    Close,
   },
   setup() {
     const message = useMessage();
+
+    const editingItemRef = ref(null);
+    const originalEditingItemData = ref(null);
 
     const newLabelItem = ref({
       name: "",
@@ -116,8 +164,19 @@ export default {
       extensions: [],
     });
 
-    const isExtensionPresentElsewhere = () => {
-      const extensionsArr = Object.values(newLabelItem.value.extensions);
+    const setEditingItem = (item) => {
+      editingItemRef.value = item;
+      originalEditingItemData.value = item;
+    };
+
+    const isExtensionPresentElsewhere = (isForEditingItem) => {
+      let extensionsArr = [];
+      if (isForEditingItem) {
+        extensionsArr = Object.values(editingItemRef.value.extensions);
+      } else {
+        extensionsArr = Object.values(newLabelItem.value.extensions);
+      }
+
       const payload = [];
 
       for (let i = 0; i < extensionsArr.length; i++) {
@@ -144,19 +203,52 @@ export default {
       };
     };
 
-    const onClickAddNewItem = () => {
-      if (newLabelItem.value.name === "") {
-        message.error("Please provide a label name");
-        return;
-      }
-      if (newLabelItem.value.extensions.length === 0) {
-        message.error("Please provide at least one extension");
-        return;
+    const closeEditingMode = () => {
+      editingItemRef.value = null;
+      originalEditingItemData.value = null;
+    };
+
+    const isValidInformation = (isForEditingItem) => {
+      const refToCheckIn = ref(null);
+
+      if (isForEditingItem) {
+        refToCheckIn.value = editingItemRef.value;
+      } else {
+        refToCheckIn.value = newLabelItem.value;
       }
 
-      const duplicateExtensionInfo = isExtensionPresentElsewhere();
+      if (refToCheckIn.value.name.trim() === "") {
+        message.error("Please provide a label name");
+        return false;
+      }
+
+      if (
+        refToCheckIn.value.folderName.trim() !== "" &&
+        fileTypes.value.find(
+          (t) =>
+            t.name !== originalEditingItemData.value.name &&
+            t.folderName === refToCheckIn.value.folderName.trim()
+        )
+      ) {
+        // made sure above that the folder name is not equal to the currently editing item's folder name
+        // need not bother if thats the case, because there's gonna be the folder name collision with itself anyways
+        message.error("This folder name already exists");
+        return false;
+      }
+
+      if (refToCheckIn.value.extensions.length === 0) {
+        message.error("Please provide at least one extension");
+        return false;
+      }
+
+      const duplicateExtensionInfo =
+        isExtensionPresentElsewhere(isForEditingItem);
 
       if (duplicateExtensionInfo.length) {
+        if (isForEditingItem) {
+          return true;
+        }
+
         duplicateExtensionInfo.forEach((element) => {
           message.error(
             `The extension ${element.ext} is already present in the item ${element.name}`
@@ -166,8 +258,15 @@ export default {
             (x) => x !== element?.ext
           );
         });
-        return;
+        return false;
       }
+
+      return true;
+    };
+
+    const onClickAddNewItem = () => {
+      const isValid = isValidInformation();
+      if (!isValid) return;
 
       const newItem = {
         name: newLabelItem.value.name,
@@ -184,11 +283,32 @@ export default {
       fileTypes.value = fileTypes.value.filter((t) => t.name !== item.name);
     };
 
+    const onConfirmItemEdit = () => {
+      const isValid = isValidInformation(true);
+
+      if (!isValid) return;
+      if (editingItemRef.value.folderName.trim() === "") {
+        editingItemRef.value.folderName = `Y_${editingItemRef.value.name}`;
+      }
+
+      editingItemRef.value.key = Date.now().toString();
+
+      fileTypes.value = fileTypes.value.map((t) =>
+        t.name === originalEditingItemData.value.name ? editingItemRef.value : t
+      );
+
+      closeEditingMode();
+    };
+
     return {
       fileTypes,
       newLabelItem,
       onClickAddNewItem,
       onClickDeleteItem,
+      editingItemRef,
+      setEditingItem,
+      onConfirmItemEdit,
+      closeEditingMode,
     };
   },
 };
