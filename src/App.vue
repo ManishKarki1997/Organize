@@ -1,6 +1,5 @@
 <template>
-  <n-config-provider namespace="theme" :theme="theme">
-    <Header />
+  <n-config-provider abstract :theme="theme">
     <router-view />
     <n-global-style />
   </n-config-provider>
@@ -9,7 +8,6 @@
 <script>
 import { NConfigProvider, NGlobalStyle } from "naive-ui";
 
-import Header from "@/components/Header.vue";
 import { theme } from "@/composables/useTheme.js";
 
 export default {
@@ -17,7 +15,6 @@ export default {
   components: {
     NConfigProvider,
     NGlobalStyle,
-    Header,
   },
   setup() {
     return {

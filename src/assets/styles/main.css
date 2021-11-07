@@ -23,3 +23,14 @@ h4 {
 .container {
   padding: 0 4rem;
 }
+
+.home {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 3rem 1fr 3rem;
+  grid-template-areas:
+    "header"
+    "main"
+    "footer";
+}
