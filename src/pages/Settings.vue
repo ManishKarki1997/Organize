@@ -21,7 +21,7 @@
             </td>
             <td>
               <div class="action-buttons-wrapper">
-                <n-button text>
+                <n-button @click="onClickDeleteItem(item)" text>
                   <template #icon>
                     <n-icon color="#ED5E60">
                       <trash />
@@ -180,10 +180,15 @@ export default {
       clearNewItemObj();
     };
 
+    const onClickDeleteItem = (item) => {
+      fileTypes.value = fileTypes.value.filter((t) => t.name !== item.name);
+    };
+
     return {
       fileTypes,
       newLabelItem,
       onClickAddNewItem,
+      onClickDeleteItem,
     };
   },
 };
