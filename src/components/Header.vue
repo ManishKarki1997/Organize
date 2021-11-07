@@ -1,13 +1,18 @@
 <template>
   <header class="container">
-    <div class="brand">
+    <div @click="$router.push('/')" class="brand">
       <h3>Organize</h3>
     </div>
 
     <nav>
       <ul>
         <li>
-          <n-button text-color="white" color="#2080F0" icon-placement="right">
+          <n-button
+            @click="$router.push('/settings')"
+            text-color="white"
+            color="#2080F0"
+            icon-placement="right"
+          >
             <template #icon>
               <n-icon color="white">
                 <settings-outline />
@@ -88,6 +93,7 @@ header {
 
   .brand {
     font-size: 1.2rem;
+    cursor: pointer;
   }
 
   nav {
