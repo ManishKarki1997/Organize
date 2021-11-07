@@ -35,14 +35,12 @@ export default {
 
 <style lang="scss" scoped>
 footer {
-  grid-area: footer;
   width: 100%;
-  max-height: 3rem;
+  height: 3rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  /* background-color: red; */
   background-color: #2080f0;
-  /* color: white; */
+  margin-top: auto;
 }
 </style>

@@ -23,9 +23,15 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.home {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
 main {
-  grid-area: main;
-  padding-top: 2rem;
-  padding-bottom: 2rem;
+  height: calc(100vh - 7rem); // header - 4rem and footer - 3rem
+  overflow: auto;
+  position: relative;
 }
 </style>

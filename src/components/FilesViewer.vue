@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="relative">
     <n-page-header>
       <template #title>
         <div class="page-header-title-wrapper">
@@ -10,7 +10,9 @@
 
       <template #extra>
         <n-space>
-          <n-button type="success" ghost>Choose Directory</n-button>
+          <n-button @click="chooseDirectory" type="success" ghost
+            >Choose Directory</n-button
+          >
         </n-space>
       </template>
     </n-page-header>
@@ -26,7 +28,7 @@
           v-for="(file, idx) in files"
           :key="'file-' + idx + '-' + file.name"
         >
-          <n-icon color="#2080F0" size="40">
+          <n-icon v-if="file.icon !== undefined" color="#2080F0" size="40">
             <div v-html="file.icon"></div>
           </n-icon>
           <h4 class="file-name">{{ file.name }}</h4>
@@ -48,7 +50,7 @@ import {
   NButton,
 } from "naive-ui";
 
-import { files, appPath } from "@/composables/useFiles";
+import { files, appPath, chooseDirectory } from "@/composables/useFiles";
 
 export default {
   components: {
@@ -63,6 +65,7 @@ export default {
     return {
       files,
       appPath,
+      chooseDirectory,
     };
   },
 };
@@ -70,7 +73,14 @@ export default {
 
 <style lang="scss" scoped>
 .n-page-header-wrapper {
-  margin-bottom: 4rem;
+  margin-bottom: 2rem;
+  position: sticky;
+  top: 0rem;
+  left: 0;
+  width: 100%;
+  background-color: var(--back-color);
+  z-index: 10;
+  padding: 1rem 0;
 
   .page-header-title-wrapper {
     p {

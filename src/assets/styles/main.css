@@ -11,6 +11,7 @@ body {
   min-height: 100vh;
   width: 100vw;
   background-color: var(--n-background-primary);
+  overflow-x: hidden;
 }
 
 h1,
@@ -22,15 +23,4 @@ h4 {
 
 .container {
   padding: 0 4rem;
-}
-
-.home {
-  min-height: 100vh;
-  display: grid;
-  grid-template-columns: 1fr;
-  grid-template-rows: 3rem 1fr 3rem;
-  grid-template-areas:
-    "header"
-    "main"
-    "footer";
 }

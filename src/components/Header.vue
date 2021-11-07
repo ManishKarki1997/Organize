@@ -77,7 +77,6 @@ export default {
 
 <style lang="scss" scoped>
 header {
-  grid-area: header;
   width: 100%;
   height: 4rem;
   background-color: var(--n-background-secondary);
