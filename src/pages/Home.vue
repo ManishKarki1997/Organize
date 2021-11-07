@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="container">
     <h4>Home</h4>
     <p>
       Lorem ipsum dolor sit amet consectetur adipisicing elit. Rerum libero
@@ -9,7 +9,9 @@
 </template>
 
 <script>
-export default {};
+export default {
+  components: {},
+};
 </script>
 
 <style></style>
