@@ -1,12 +1,14 @@
 <template>
   <n-config-provider abstract :theme="theme">
-    <router-view />
-    <n-global-style />
+    <n-message-provider>
+      <router-view />
+      <n-global-style />
+    </n-message-provider>
   </n-config-provider>
 </template>
 
 <script>
-import { NConfigProvider, NGlobalStyle } from "naive-ui";
+import { NConfigProvider, NGlobalStyle, NMessageProvider } from "naive-ui";
 
 import { theme } from "@/composables/useTheme.js";
 
@@ -15,6 +17,7 @@ export default {
   components: {
     NConfigProvider,
     NGlobalStyle,
+    NMessageProvider,
   },
   setup() {
     return {

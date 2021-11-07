@@ -1,6 +1,12 @@
 <template>
   <footer>
-    <n-button text-color="#2080F0" color="white" icon-placement="right">
+    <n-button
+      :loading="isProcessing"
+      @click="handleOrganize"
+      text-color="#2080F0"
+      color="white"
+      icon-placement="right"
+    >
       <template #icon>
         <n-icon color="#2080F0">
           <svg
@@ -24,11 +30,32 @@
 </template>
 
 <script>
-import { NButton, NIcon } from "naive-ui";
+import { NButton, NIcon, useMessage } from "naive-ui";
+
+import { organize, isProcessing } from "@/composables/useFiles.js";
+
 export default {
   components: {
     NButton,
     NIcon,
+  },
+  setup() {
+    const message = useMessage();
+
+    const handleOrganize = () => {
+      try {
+        organize();
+        message.success("Files organized successfully");
+      } catch (error) {
+        if (error) {
+          message.error("Something went wrong");
+        }
+      }
+    };
+    return {
+      isProcessing,
+      handleOrganize,
+    };
   },
 };
 </script>
