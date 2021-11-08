@@ -19,8 +19,8 @@ import { settings } from "@/composables/useSettings";
 const fileNameLength = 150;
 const isProcessing = ref(false);
 const homedir = os.homedir();
-// const appPath = ref(`${homedir}/Desktop`);
-const appPath = ref(`${homedir}/Downloads`);
+const appPath = ref(`${homedir}/Desktop`);
+// const appPath = ref(`${homedir}/Downloads`);
 let appPathCopy = appPath.value;
 
 const files = computed(() => {
