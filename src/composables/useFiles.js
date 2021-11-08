@@ -1,9 +1,10 @@
 /* eslint-disable no-unreachable */
 import fs from "fs";
 import path from "path";
+import os from "os";
 
 import { ref, computed } from "vue";
-import { app, dialog } from "@electron/remote";
+import { dialog } from "@electron/remote";
 
 import formatFileSize from "@/utils/formatFileSize.js";
 import {
@@ -15,12 +16,12 @@ import {
 import { getFileIcon } from "../utils/files";
 import { settings } from "@/composables/useSettings";
 
-app;
 const fileNameLength = 150;
 const isProcessing = ref(false);
-// const appPath = ref(app.getAppPath());
-const appPath = ref(`C:\\Users\\manis\\Desktop\\test\\first`);
-let appPathCopy = `C:\\Users\\manis\\Desktop\\test\\first`;
+const homedir = os.homedir();
+// const appPath = ref(`${homedir}/Desktop`);
+const appPath = ref(`${homedir}/Downloads`);
+let appPathCopy = appPath.value;
 
 const files = computed(() => {
   const fileNames = fs.readdirSync(appPath.value);

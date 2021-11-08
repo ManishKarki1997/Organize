@@ -24,3 +24,20 @@ h4 {
 .container {
   padding: 0 4rem;
 }
+
+::-webkit-scrollbar-track {
+  background-color: red;
+  /* background: var(--n-scrollbarColor); */
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  /* background: #888; */
+  background-color: blue;
+  /* background: var(--n-scrollbarColor); */
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}

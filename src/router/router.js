@@ -1,11 +1,16 @@
-import { createWebHistory, createRouter } from "vue-router";
+import {
+  createWebHistory,
+  createRouter,
+  createWebHashHistory,
+} from "vue-router";
 
 import Home from "../pages/Home.vue";
 import Settings from "../pages/Settings.vue";
 
-const history = createWebHistory();
 const router = createRouter({
-  history,
+  history: process.env.IS_ELECTRON
+    ? createWebHashHistory()
+    : createWebHistory(),
   routes: [
     {
       path: "/",

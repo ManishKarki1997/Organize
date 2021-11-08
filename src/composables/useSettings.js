@@ -26,7 +26,7 @@ const fileTypes = ref([
 ]);
 
 const settings = ref({
-  isThemeDarkMode: true,
+  isThemeDarkMode: false,
   isFirstLoad: false,
   fileTypes: JSON.parse(JSON.stringify(fileTypes.value)),
 });

@@ -1,7 +1,9 @@
 <template>
-  <div class="relative">
+  <div class="">
     <n-spin :show="isProcessing">
-      <n-page-header>
+      <n-page-header
+        :class="[settings.isThemeDarkMode ? 'bg-dark' : 'bg-light']"
+      >
         <template #title>
           <div class="page-header-title-wrapper">
             <p>Directory</p>
@@ -17,6 +19,7 @@
           </n-space>
         </template>
       </n-page-header>
+
       <div class="files-wrapper">
         <n-grid
           :x-gap="24"
@@ -59,6 +62,8 @@ import {
   isProcessing,
 } from "@/composables/useFiles";
 
+import { settings } from "@/composables/useSettings";
+
 export default {
   components: {
     NGrid,
@@ -71,6 +76,7 @@ export default {
   },
   setup() {
     return {
+      settings,
       files,
       appPath,
       chooseDirectory,
@@ -87,9 +93,15 @@ export default {
   top: 0rem;
   left: 0;
   width: 100%;
-  /* background-color: var(--back-color); */
   z-index: 10;
   padding: 1rem 0;
+
+  &.bg-dark {
+    background-color: #101014;
+  }
+  &.bg-light {
+    background-color: white;
+  }
 
   .page-header-title-wrapper {
     p {
