@@ -18,6 +18,7 @@ protocol.registerSchemesAsPrivileged([
 async function createWindow() {
   // Create the browser window.
   const win = new BrowserWindow({
+    icon: __dirname + "/icon.ico",
     width: 1000,
     height: 800,
     webPreferences: {
