@@ -1,4 +1,8 @@
 import { ref } from "vue";
+import { setLocalStorage } from "./useLocalStorage";
+import constants from "@/data/constants.js";
+
+const APP_KEY = constants.APP_LOCAL_STORAGE_KEY_NAME;
 
 const fileTypes = ref([
   {
@@ -21,4 +25,14 @@ const fileTypes = ref([
   },
 ]);
 
-export { fileTypes };
+const settings = ref({
+  isThemeDarkMode: true,
+  isFirstLoad: false,
+  fileTypes: JSON.parse(JSON.stringify(fileTypes.value)),
+});
+
+const saveSettings = (payload) => {
+  setLocalStorage(APP_KEY, payload);
+};
+
+export { fileTypes, settings, saveSettings };

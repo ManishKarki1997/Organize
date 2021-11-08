@@ -1,17 +1,23 @@
 import { darkTheme } from "naive-ui";
-import { computed, ref } from "vue";
+import { computed } from "vue";
 
-import { setLocalStorage } from "./useLocalStorage";
+import { settings, saveSettings } from "@/composables/useSettings";
 
 const themeKey = "organize-theme-dark-mode";
 
-const isDarkModeSet = ref(false);
-
-const theme = computed(() => (isDarkModeSet.value ? darkTheme : null));
+const theme = computed(() =>
+  settings.value.isThemeDarkMode ? darkTheme : null
+);
 
 const toggleTheme = () => {
-  isDarkModeSet.value = !isDarkModeSet.value;
-  setLocalStorage(themeKey, isDarkModeSet.value);
+  settings.value.isThemeDarkMode = !settings.value.isThemeDarkMode;
+
+  const payload = JSON.stringify({
+    ...JSON.parse(JSON.stringify(settings.value)),
+    isThemeDarkMode: settings.value.isThemeDarkMode,
+  });
+
+  saveSettings(payload);
 };
 
-export { theme, toggleTheme, isDarkModeSet, themeKey };
+export { theme, toggleTheme, themeKey };

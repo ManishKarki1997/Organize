@@ -44,17 +44,9 @@
 </template>
 
 <script>
-import { onMounted } from "vue";
 import { NButton, NIcon } from "naive-ui";
 import { SettingsOutline, Sunny, Moon } from "@vicons/ionicons5";
-
-import { getLocalStorage } from "@/composables/useLocalStorage.js";
-import {
-  theme,
-  toggleTheme,
-  isDarkModeSet,
-  themeKey,
-} from "@/composables/useTheme.js";
+import { theme, toggleTheme } from "@/composables/useTheme.js";
 
 export default {
   components: {
@@ -65,13 +57,6 @@ export default {
     Moon,
   },
   setup() {
-    onMounted(() => {
-      const savedTheme = getLocalStorage(themeKey);
-      if (savedTheme !== undefined || savedTheme !== null) {
-        isDarkModeSet.value = savedTheme === "true";
-      }
-    });
-
     return {
       theme,
       toggleTheme,

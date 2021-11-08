@@ -2,6 +2,16 @@
   <main>
     <Header />
     <div class="container content-wrapper">
+      <n-alert type="info" title="Names Collision">
+        <template #icon>
+          <n-icon>
+            <information />
+          </n-icon>
+        </template>
+        Please make sure there is no naming collisions. There is minimal
+        checking for extensions naming collision.
+      </n-alert>
+
       <n-table :single-line="false">
         <thead>
           <tr>
@@ -121,6 +131,22 @@
           </tr>
         </tbody>
       </n-table>
+
+      <div class="update-icon-wrapper">
+        <n-button
+          @click="handleSaveSettings"
+          text-color="white"
+          color="#2080F0"
+          icon-placement="right"
+        >
+          <template #icon>
+            <n-icon color="white">
+              <save-outline />
+            </n-icon>
+          </template>
+          Update
+        </n-button>
+      </div>
     </div>
   </main>
 </template>
@@ -128,6 +154,7 @@
 <script>
 import { ref } from "vue";
 import {
+  NAlert,
   NTable,
   NIcon,
   NInput,
@@ -136,8 +163,15 @@ import {
   useMessage,
 } from "naive-ui";
 import Header from "@/components/Header.vue";
-import { fileTypes } from "@/composables/useSettings";
-import { Trash, Add, Checkmark, Close } from "@vicons/ionicons5";
+import { settings, saveSettings } from "@/composables/useSettings";
+import {
+  Trash,
+  Add,
+  Checkmark,
+  Close,
+  SaveOutline,
+  Information,
+} from "@vicons/ionicons5";
 
 export default {
   components: {
@@ -146,11 +180,14 @@ export default {
     NInput,
     NButton,
     NDynamicTags,
+    NAlert,
     NIcon,
     Trash,
     Add,
     Checkmark,
     Close,
+    SaveOutline,
+    Information,
   },
   setup() {
     const message = useMessage();
@@ -180,7 +217,7 @@ export default {
       const payload = [];
 
       for (let i = 0; i < extensionsArr.length; i++) {
-        const found = fileTypes.value.map((t) => {
+        const found = settings.value.fileTypes.map((t) => {
           if (Object.values(t.extensions).includes(extensionsArr[i])) {
             return {
               ...t,
@@ -224,7 +261,7 @@ export default {
 
       if (
         refToCheckIn.value.folderName.trim() !== "" &&
-        fileTypes.value.find(
+        settings.value.fileTypes.find(
           (t) =>
             t.name !== originalEditingItemData.value.name &&
             t.folderName === refToCheckIn.value.folderName.trim()
@@ -269,18 +306,22 @@ export default {
       if (!isValid) return;
 
       const newItem = {
+        key: Date.now().toString(),
         name: newLabelItem.value.name,
         folderName:
           newLabelItem.value.folderName || `Y_${newLabelItem.value.name}`,
         extensions: newLabelItem.value.extensions,
       };
 
-      fileTypes.value.push(newItem);
+      settings.value.fileTypes.push(newItem);
+
       clearNewItemObj();
     };
 
     const onClickDeleteItem = (item) => {
-      fileTypes.value = fileTypes.value.filter((t) => t.name !== item.name);
+      settings.value.fileTypes = settings.value.fileTypes.filter(
+        (t) => t.name !== item.name
+      );
     };
 
     const onConfirmItemEdit = () => {
@@ -293,15 +334,32 @@ export default {
 
       editingItemRef.value.key = Date.now().toString();
 
-      fileTypes.value = fileTypes.value.map((t) =>
+      settings.value.fileTypes = settings.value.fileTypes.map((t) =>
         t.name === originalEditingItemData.value.name ? editingItemRef.value : t
       );
 
       closeEditingMode();
     };
 
+    const handleSaveSettings = () => {
+      try {
+        const payload = JSON.stringify({
+          ...JSON.parse(JSON.stringify(settings.value)),
+          fileTypes: settings.value.fileTypes,
+        });
+
+        saveSettings(payload);
+      } catch (error) {
+        if (error) {
+          message.success("Couldn't update settings");
+        }
+      } finally {
+        message.success("Settings updated successfully");
+      }
+    };
+
     return {
-      fileTypes,
+      fileTypes: settings.value.fileTypes,
       newLabelItem,
       onClickAddNewItem,
       onClickDeleteItem,
@@ -309,6 +367,7 @@ export default {
       setEditingItem,
       onConfirmItemEdit,
       closeEditingMode,
+      handleSaveSettings,
     };
   },
 };
@@ -317,6 +376,10 @@ export default {
 <style lang="scss" scoped>
 .content-wrapper {
   padding-top: 4rem;
+
+  table {
+    margin: 1rem 0;
+  }
 
   .action-buttons-wrapper {
     & > * {

@@ -13,7 +13,7 @@ import {
   createFolder,
 } from "@/utils/files.js";
 import { getFileIcon } from "../utils/files";
-import { fileTypes as settingFileTypes } from "@/composables/useSettings";
+import { settings } from "@/composables/useSettings";
 
 app;
 const fileNameLength = 150;
@@ -65,17 +65,17 @@ const organize = () => {
   try {
     isProcessing.value = true;
 
-    const settingFileTypesCopy = JSON.parse(
-      JSON.stringify(settingFileTypes.value)
-    );
+    const fileTypes = JSON.parse(JSON.stringify(settings.value)).fileTypes;
 
     files.value.forEach((file) => {
       if (!file.isDirectory) {
-        const objName = Object.keys(settingFileTypesCopy).find((f) =>
-          settingFileTypesCopy[f].extensions?.find((e) => e === file.extension)
+        const fileType = fileTypes.find((t) =>
+          t.extensions.includes(file.extension)
         );
-        const destinationFolderName =
-          settingFileTypes.value[objName]?.folderName;
+
+        if (!fileType) return;
+
+        const destinationFolderName = fileType?.folderName;
 
         if (!destinationFolderName) return;
 
